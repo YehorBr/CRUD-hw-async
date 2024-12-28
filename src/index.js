@@ -21,30 +21,59 @@ import {updateStudent} from './api-server'
 
 const getStudentsBtn = document.querySelector('.get-students-btn')
 const studentList = document.querySelector('.student-list')
-const form = document.querySelector('form')
+const form = document.querySelector('.add-form')
+const deleteBtn = document.querySelector(".delete-button")
+const updateBtn = document.querySelector(".update-button")
+const updateForm = document.querySelector(".update-form")
+const backdropRef = document.querySelector(".backdrop")
+const modalRef = document.querySelector(".modal")
+const closeModalBtn = document.querySelector(".close-modal-btn")
 
-getStudentsBtn.addEventListener('click',  onGetStudentsBtn)
-form.addEventListener('submit', onSubmit)
+if (getStudentsBtn) {
+    getStudentsBtn.addEventListener('click', onGetStudentsBtn);
+}
+
+if (form) {
+    form.addEventListener('submit', onSubmit);
+}
+
+if (studentList) {
+    studentList.addEventListener('click', onBtnClick);
+}
+
+if (updateBtn) {
+    updateBtn.addEventListener('click', onUpdateBtn);
+}
+
+if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', onCloseBtn);
+}
+
+if (updateForm) {
+    updateForm.addEventListener('submit', onUpdateSubmit);
+}
+
+
 
 function onGetStudentsBtn(){
     fetchStudents().then(studentsArr =>{
         const studentMarkUp = studentListMarkUp(studentsArr)
-        studentList.insertAdjacentHTML('beforeend', studentMarkUp)
+        studentList.innerHTML = studentMarkUp
     } );
 }
 
 function studentListMarkUp(arrOfStudents){
     return arrOfStudents.map((student)=>{
         return `
-        <li>
+        <li id="${student.id}">
       <h1>Ім'я:${student.name}</h1>
       <p>Вік:${student.age}</p>
       <p>Курс:${student.course}</p>
       <p>${student.skills}</p>
       <p>email:${student.email}</p>
       <p>Зараховано:${student.isEnrolled}</p>
-      <button>Видалити студента</button>
-      <button>Оновити студента</button>
+      <button class="delete-button" type="button">Видалити студента</button>
+      <button class="update-button" type="button">Оновити студента</button>
     </li>
         `
     }) 
@@ -64,5 +93,61 @@ function onSubmit(e){
         isEnrolled: formEl.isEnrolled.checked 
     }
 
+    addStudent(newStudent)
+    .then(response  => console.log('afaffa'))
+
     e.currentTarget.reset()
 }
+
+function onUpdateBtn(id){
+    modalRef.classList.add('is-show')
+    backdropRef.classList.add('modal-show')
+
+    console.log(document.getElementById(id));
+
+}
+
+function onCloseBtn(){
+    modalRef.classList.remove('is-show')
+    backdropRef.classList.remove('modal-show')
+}
+
+
+function onBtnClick(e){
+    studentId = e.target.parentNode.id;
+
+
+    if(e.target.classList.contains('delete-button')){
+        deleteStudent(studentId).then(() => onGetStudentsBtn())
+        
+    }
+    else if(e.target.classList.contains('update-button')){
+        onUpdateBtn(studentId)
+        
+    }
+}
+
+function onUpdateSubmit(e) {
+    e.preventDefault()
+    
+    let valueToUpdate = {}
+
+    for (const element of e.target.elements) {
+        if (element.value !== '') {
+            valueToUpdate[element.name] = element.value
+        }
+    
+    }
+    
+
+    updateStudent(studentId, valueToUpdate)
+    .then(()=>{
+        onGetStudentsBtn();
+        modalRef.classList.remove('is-show');
+        backdropRef.classList.remove('modal-show');
+        updateForm.reset();
+    })
+    
+}
+
+
