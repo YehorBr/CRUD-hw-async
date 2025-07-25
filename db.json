@@ -1,15 +1,6 @@
 {
   "students": [
     {
-      "id": "5",
-      "name": "Johny",
-      "age": "34",
-      "course": "hdf",
-      "skills": "thsaa",
-      "email": "f2f22@fgs",
-      "isEnrolled": "on"
-    },
-    {
       "id": "f38f",
       "name": "yehor",
       "age": "16",
@@ -19,6 +10,17 @@
       ],
       "email": "yehor12344321@gmail.com",
       "isEnrolled": false
+    },
+    {
+      "id": "86ef",
+      "name": "Yehor Brui",
+      "age": "16",
+      "course": "frontend",
+      "skills": [
+        "HTML JS CSS"
+      ],
+      "email": "yehor12344321@gmail.com",
+      "isEnrolled": "on"
     }
   ]
 }
